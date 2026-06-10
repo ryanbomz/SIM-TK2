@@ -37,12 +37,12 @@ $error = flash('error');
                 <?= csrf_field() ?>
                 <label>Username / Email</label>
                 <div class="input-group">
-                    <span>@</span>
-                    <input type="text" name="username" placeholder="contoh: mahasiswa / admin" required>
+                    <span></span>
+                    <input type="text" name="username" placeholder="mahasiswa / admin" required>
                 </div>
                 <label>Password</label>
                 <div class="input-group">
-                    <span>*</span>
+                    <span></span>
                     <input type="password" id="password" name="password" placeholder="masukkan password" required>
                     <button type="button" class="ghost-btn" data-toggle-password>Lihat</button>
                 </div>
