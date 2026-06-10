@@ -6,10 +6,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect_to('index.php');
 }
 
+verify_csrf('index.php');
+
 $username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
 
-$stmt = $pdo->prepare('SELECT * FROM users WHERE username = :username OR email = :email LIMIT 1');
+$stmt = $pdo->prepare('SELECT id_user, nama, username, password, role, email FROM users WHERE username = :username OR email = :email LIMIT 1');
 $stmt->execute([
     'username' => $username,
     'email' => $username,

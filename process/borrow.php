@@ -7,12 +7,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect_to('user/catalog.php');
 }
 
+verify_csrf('user/catalog.php');
+
 $idBook = (int) ($_POST['id_book'] ?? 0);
 $idUser = (int) current_user()['id_user'];
 
 try {
     $pdo->beginTransaction();
-    $bookStmt = $pdo->prepare('SELECT * FROM books WHERE id_book = :id_book FOR UPDATE');
+    $bookStmt = $pdo->prepare('SELECT id_book, available_stock FROM books WHERE id_book = :id_book FOR UPDATE');
     $bookStmt->execute(['id_book' => $idBook]);
     $book = $bookStmt->fetch();
 

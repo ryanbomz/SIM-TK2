@@ -7,12 +7,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect_to('user/history.php');
 }
 
+verify_csrf(current_user()['role'] === 'admin' ? 'admin/loans.php' : 'user/history.php');
+
 $idLoan = (int) ($_POST['id_loan'] ?? 0);
 $user = current_user();
 
 try {
     $pdo->beginTransaction();
-    $sql = "SELECT l.*, b.available_stock, b.total_stock FROM loans l JOIN books b ON b.id_book = l.id_book WHERE l.id_loan = :id_loan";
+    $sql = "SELECT l.id_loan, l.id_user, l.id_book, l.status, b.available_stock, b.total_stock FROM loans l JOIN books b ON b.id_book = l.id_book WHERE l.id_loan = :id_loan";
     if ($user['role'] !== 'admin') {
         $sql .= ' AND l.id_user = :id_user';
     }

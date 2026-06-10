@@ -17,5 +17,5 @@ Mahasiswa
 
 Catatan:
 - Konfigurasi koneksi database ada di config/database.php.
-- Password seed awal akan otomatis di-hash setelah login pertama.
+- Password akun seed sudah disimpan dalam bentuk hash.
 - Fitur yang tersedia: login, session, logout, katalog, pencarian, filter kategori, detail buku, peminjaman, pengembalian, riwayat, dashboard admin, CRUD buku, CRUD anggota, dan laporan peminjaman.

@@ -3,11 +3,11 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/layout.php';
 require_login('mahasiswa');
 
-$stmt = $pdo->prepare("SELECT l.*, b.title FROM loans l JOIN books b ON b.id_book = l.id_book WHERE l.id_user = :id_user ORDER BY l.id_loan DESC");
+$stmt = $pdo->prepare("SELECT l.id_loan, l.loan_date, l.due_date, l.return_date, l.status, b.title FROM loans l JOIN books b ON b.id_book = l.id_book WHERE l.id_user = :id_user ORDER BY l.id_loan DESC");
 $stmt->execute(['id_user' => current_user()['id_user']]);
 $loans = $stmt->fetchAll();
 
-$favoriteStmt = $pdo->prepare("SELECT f.id_favorite, b.* FROM favorites f JOIN books b ON b.id_book = f.id_book WHERE f.id_user = :id_user ORDER BY f.id_favorite DESC");
+$favoriteStmt = $pdo->prepare("SELECT f.id_favorite, b.id_book, b.title, b.author, b.category, b.total_stock, b.available_stock FROM favorites f JOIN books b ON b.id_book = f.id_book WHERE f.id_user = :id_user ORDER BY f.id_favorite DESC");
 $favoriteStmt->execute(['id_user' => current_user()['id_user']]);
 $favorites = $favoriteStmt->fetchAll();
 
@@ -53,6 +53,7 @@ render_user_topbar('history');
                             <td>
                                 <?php if ($loan['status'] === 'Dipinjam'): ?>
                                     <form class="inline-form" action="<?= e(base_url('process/return.php')) ?>" method="post">
+                                        <?= csrf_field() ?>
                                         <input type="hidden" name="id_loan" value="<?= (int) $loan['id_loan'] ?>">
                                         <button class="small-btn" type="submit">Kembalikan</button>
                                     </form>
@@ -87,6 +88,7 @@ render_user_topbar('history');
                             <td class="status-row">
                                 <a class="small-btn" href="<?= e(base_url('user/detail.php?id=' . $book['id_book'])) ?>">Detail</a>
                                 <form class="inline-form" action="<?= e(base_url('process/favorite.php')) ?>" method="post">
+                                    <?= csrf_field() ?>
                                     <input type="hidden" name="id_book" value="<?= (int) $book['id_book'] ?>">
                                     <input type="hidden" name="action" value="remove">
                                     <button class="danger-btn" type="submit">Hapus</button>
@@ -106,6 +108,7 @@ render_user_topbar('history');
                 <p>Perbarui informasi akun mahasiswa</p>
             </div>
             <form class="form-grid mt-16" action="<?= e(base_url('process/account.php')) ?>" method="post">
+                <?= csrf_field() ?>
                 <div class="form-field"><label>Nama</label><input name="nama" value="<?= e(current_user()['nama']) ?>" required></div>
                 <div class="form-field"><label>Username</label><input name="username" value="<?= e(current_user()['username']) ?>" required></div>
                 <div class="form-field full"><label>Email</label><input type="email" name="email" value="<?= e(current_user()['email']) ?>" required></div>

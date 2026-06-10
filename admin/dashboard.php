@@ -9,7 +9,7 @@ $stats = [
     'active' => (int) $pdo->query("SELECT COUNT(*) FROM loans WHERE status = 'Dipinjam'")->fetchColumn(),
     'returned' => (int) $pdo->query("SELECT COUNT(*) FROM loans WHERE status = 'Dikembalikan'")->fetchColumn(),
 ];
-$activities = $pdo->query("SELECT l.*, u.nama, b.title FROM loans l JOIN users u ON u.id_user = l.id_user JOIN books b ON b.id_book = l.id_book ORDER BY l.id_loan DESC LIMIT 6")->fetchAll();
+$activities = $pdo->query("SELECT l.loan_date, l.return_date, l.status, u.nama, b.title FROM loans l JOIN users u ON u.id_user = l.id_user JOIN books b ON b.id_book = l.id_book ORDER BY l.id_loan DESC LIMIT 6")->fetchAll();
 
 render_head('Dashboard Admin');
 ?>

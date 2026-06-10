@@ -5,7 +5,7 @@ require_login('admin');
 
 $status = $_GET['status'] ?? 'all';
 $params = [];
-$sql = "SELECT l.*, u.nama, b.title FROM loans l JOIN users u ON u.id_user = l.id_user JOIN books b ON b.id_book = l.id_book";
+$sql = "SELECT l.id_loan, l.loan_date, l.due_date, l.return_date, l.status, u.nama, b.title FROM loans l JOIN users u ON u.id_user = l.id_user JOIN books b ON b.id_book = l.id_book";
 if ($status !== 'all') {
     $sql .= ' WHERE l.status = :status';
     $params['status'] = $status;
@@ -59,6 +59,7 @@ render_head('Laporan Peminjaman');
                             <td>
                                 <?php if ($loan['status'] === 'Dipinjam'): ?>
                                     <form class="inline-form" action="<?= e(base_url('process/return.php')) ?>" method="post">
+                                        <?= csrf_field() ?>
                                         <input type="hidden" name="id_loan" value="<?= (int) $loan['id_loan'] ?>">
                                         <button class="small-btn" type="submit">Tandai Kembali</button>
                                     </form>

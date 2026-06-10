@@ -55,9 +55,9 @@ CREATE TABLE favorites (
 );
 
 INSERT INTO users (nama, username, password, role, email) VALUES
-('Admin Perpustakaan', 'admin', 'admin123', 'admin', 'admin@libraryhub.ac.id'),
-('Andi Mahasiswa', 'mahasiswa', 'mahasiswa123', 'mahasiswa', 'andi@kampus.ac.id'),
-('Siti Nurhaliza', 'siti', 'mahasiswa123', 'mahasiswa', 'siti@kampus.ac.id');
+('Admin Perpustakaan', 'admin', '$2y$10$uDbpCFVXSWFMwX/3LCZsJujeQGDy7KbvgF03E4MkHRbjhHYEec4bK', 'admin', 'admin@libraryhub.ac.id'),
+('Andi Mahasiswa', 'mahasiswa', '$2y$10$aIIgoRzwzT4OGJP3J3gcAO4TCKJUjPmdb8NYyZ2oVx7J4U1ezPhYO', 'mahasiswa', 'andi@kampus.ac.id'),
+('Siti Nurhaliza', 'siti', '$2y$10$aIIgoRzwzT4OGJP3J3gcAO4TCKJUjPmdb8NYyZ2oVx7J4U1ezPhYO', 'mahasiswa', 'siti@kampus.ac.id');
 
 INSERT INTO books (title, author, publisher, year, category, isbn, total_stock, available_stock, synopsis, status) VALUES
 ('Algoritma & Pemrograman', 'Rinaldi Munir', 'Informatika', 2019, 'Ilmu Komputer', '978-602-6232-00-1', 5, 3, 'Buku ini membahas dasar-dasar algoritma dan pemrograman secara sistematis, mulai dari konsep dasar, struktur data, teknik algoritma, hingga implementasi menggunakan berbagai bahasa pemrograman.', 'Tersedia'),

@@ -7,6 +7,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect_to('user/history.php?tab=account');
 }
 
+verify_csrf('user/history.php?tab=account');
+
 $idUser = (int) current_user()['id_user'];
 $nama = trim($_POST['nama'] ?? '');
 $username = trim($_POST['username'] ?? '');
@@ -16,6 +18,11 @@ $passwordConfirm = $_POST['password_confirm'] ?? '';
 
 if ($nama === '' || $username === '' || $email === '') {
     set_flash('error', 'Nama, username, dan email wajib diisi.');
+    redirect_to('user/history.php?tab=account');
+}
+
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    set_flash('error', 'Format email tidak valid.');
     redirect_to('user/history.php?tab=account');
 }
 

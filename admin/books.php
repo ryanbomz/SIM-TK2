@@ -5,6 +5,8 @@ require_login('admin');
 
 $editBook = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verify_csrf('admin/books.php');
+
     $action = $_POST['action'] ?? '';
     if ($action === 'save') {
         $id = (int) ($_POST['id_book'] ?? 0);
@@ -19,6 +21,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'available_stock' => max(0, (int) ($_POST['available_stock'] ?? 0)),
             'synopsis' => trim($_POST['synopsis'] ?? ''),
         ];
+        if ($data['title'] === '' || $data['author'] === '' || $data['publisher'] === '' || $data['category'] === '' || $data['isbn'] === '') {
+            set_flash('error', 'Judul, penulis, penerbit, kategori, dan ISBN wajib diisi.');
+            redirect_to('admin/books.php');
+        }
+
+        if ($data['year'] < 1900 || $data['year'] > (int) date('Y') + 1) {
+            set_flash('error', 'Tahun terbit tidak valid.');
+            redirect_to('admin/books.php');
+        }
+
+        $checkStmt = $pdo->prepare('SELECT COUNT(*) FROM books WHERE isbn = :isbn AND id_book <> :id_book');
+        $checkStmt->execute([
+            'isbn' => $data['isbn'],
+            'id_book' => $id,
+        ]);
+        if ((int) $checkStmt->fetchColumn() > 0) {
+            set_flash('error', 'ISBN sudah digunakan buku lain.');
+            redirect_to('admin/books.php');
+        }
+
         $data['available_stock'] = min($data['available_stock'], $data['total_stock']);
         $data['status'] = $data['available_stock'] > 0 ? 'Tersedia' : 'Dipinjam';
 
@@ -44,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if (isset($_GET['edit'])) {
-    $stmt = $pdo->prepare('SELECT * FROM books WHERE id_book = :id_book');
+    $stmt = $pdo->prepare('SELECT id_book, title, author, publisher, year, category, isbn, total_stock, available_stock, synopsis FROM books WHERE id_book = :id_book');
     $stmt->execute(['id_book' => (int) $_GET['edit']]);
     $editBook = $stmt->fetch();
 }
@@ -62,7 +84,7 @@ if ($category !== 'all') {
     $where[] = 'category = :category';
     $params['category'] = $category;
 }
-$stmt = $pdo->prepare('SELECT * FROM books' . ($where ? ' WHERE ' . implode(' AND ', $where) : '') . ' ORDER BY id_book DESC');
+$stmt = $pdo->prepare('SELECT id_book, title, author, category, total_stock, available_stock, status FROM books' . ($where ? ' WHERE ' . implode(' AND ', $where) : '') . ' ORDER BY id_book DESC');
 $stmt->execute($params);
 $books = $stmt->fetchAll();
 
@@ -77,6 +99,7 @@ render_head('Manajemen Buku');
                 <div><h2><?= $editBook ? 'Edit Buku' : 'Tambah Buku' ?></h2><p>Kelola data buku, stok, kategori, dan status ketersediaan.</p></div>
             </div>
             <form method="post" class="form-grid">
+                <?= csrf_field() ?>
                 <input type="hidden" name="action" value="save">
                 <input type="hidden" name="id_book" value="<?= e($editBook['id_book'] ?? '') ?>">
                 <div class="form-field"><label>Judul</label><input name="title" value="<?= e($editBook['title'] ?? '') ?>" required></div>
@@ -115,6 +138,7 @@ render_head('Manajemen Buku');
                             <td class="status-row">
                                 <a class="small-btn" href="<?= e(base_url('admin/books.php?edit=' . $book['id_book'])) ?>">Edit</a>
                                 <form class="inline-form" method="post">
+                                    <?= csrf_field() ?>
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id_book" value="<?= (int) $book['id_book'] ?>">
                                     <button class="danger-btn" data-confirm="Hapus buku ini?" type="submit">Hapus</button>

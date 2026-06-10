@@ -8,7 +8,7 @@ $available = (int) $pdo->query("SELECT COUNT(*) FROM books WHERE status = 'Terse
 $activeLoansStmt = $pdo->prepare("SELECT COUNT(*) FROM loans WHERE id_user = :id_user AND status = 'Dipinjam'");
 $activeLoansStmt->execute(['id_user' => current_user()['id_user']]);
 $activeLoans = (int) $activeLoansStmt->fetchColumn();
-$latestStmt = $pdo->prepare("SELECT l.*, b.title FROM loans l JOIN books b ON b.id_book = l.id_book WHERE l.id_user = :id_user ORDER BY l.id_loan DESC LIMIT 5");
+$latestStmt = $pdo->prepare("SELECT l.loan_date, l.due_date, l.return_date, l.status, b.title FROM loans l JOIN books b ON b.id_book = l.id_book WHERE l.id_user = :id_user ORDER BY l.id_loan DESC LIMIT 5");
 $latestStmt->execute(['id_user' => current_user()['id_user']]);
 $latestLoans = $latestStmt->fetchAll();
 

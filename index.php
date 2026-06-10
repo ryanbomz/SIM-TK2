@@ -34,6 +34,7 @@ $error = flash('error');
             <p>Masuk untuk melanjutkan ke akun Anda</p>
             <?php if ($error): ?><div class="alert error"><?= e($error) ?></div><?php endif; ?>
             <form action="<?= e(base_url('process/login.php')) ?>" method="post">
+                <?= csrf_field() ?>
                 <label>Username / Email</label>
                 <div class="input-group">
                     <span>@</span>

@@ -70,8 +70,6 @@ a.admin-menu { display: block; }
 
 .page { display: none; min-height: 100vh; }
 .page.active { display: block; }
-.view, .admin-view { display: none; }
-.view.active, .admin-view.active { display: block; }
 
 /* LOGIN */
 .login-page {
@@ -212,23 +210,6 @@ a.admin-menu { display: block; }
   color: var(--text);
 }
 .ghost-btn { background: transparent; color: var(--muted); }
-.role-switch {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  background: #f0f5fc;
-  padding: 7px;
-  border-radius: 16px;
-  margin: 22px 0;
-}
-.role-btn {
-  border-radius: 12px;
-  padding: 11px;
-  color: var(--muted);
-  background: transparent;
-  font-weight: 700;
-}
-.role-btn.active { background: var(--white); color: var(--blue-800); box-shadow: 0 8px 18px rgba(6,43,99,.1); }
 .primary-btn {
   border-radius: 14px;
   background: linear-gradient(135deg, var(--blue-800), var(--blue-600));
@@ -238,7 +219,6 @@ a.admin-menu { display: block; }
   box-shadow: 0 12px 24px rgba(7,86,184,.22);
 }
 .primary-btn.full { width: 100%; min-height: 52px; }
-.forgot { display: block; text-align: center; margin-top: 18px; color: var(--blue-700); font-weight: 700; }
 .login-note { text-align: center; font-size: 13px; margin-top: 18px !important; }
 
 /* SHARED */
@@ -276,7 +256,6 @@ a.admin-menu { display: block; }
   font-weight: 900;
 }
 .avatar.big { width: 90px; height: 90px; font-size: 34px; margin: 0 auto 16px; }
-.icon-btn { background: var(--blue-100); width: 38px; height: 38px; border-radius: 50%; }
 .logout-btn {
   background: #f0f5fc;
   color: var(--blue-800);
@@ -356,10 +335,6 @@ a.admin-menu { display: block; }
   justify-content: space-between;
   background: linear-gradient(135deg, var(--blue-900), var(--blue-600));
 }
-.book-cover.green { background: linear-gradient(135deg, #063f3f, #18a77a); }
-.book-cover.orange { background: linear-gradient(135deg, #9d3b08, #ff9c35); }
-.book-cover.purple { background: linear-gradient(135deg, #302065, #8265ff); }
-.book-cover.dark { background: linear-gradient(135deg, #102033, #2b425e); }
 .book-cover h3 { margin: 0; font-size: 18px; line-height: 1.12; }
 .book-cover small { opacity: .8; }
 .book-info { padding: 15px; }
@@ -474,15 +449,6 @@ select {
   color: var(--text);
   outline: 0;
 }
-.action-icons { display: flex; gap: 8px; }
-.action-icons button {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: #f3f7fb;
-}
-.action-icons button.delete { color: #d93737; }
-
 @media (max-width: 1050px) {
   .login-wrapper { grid-template-columns: 1fr; padding: 30px 0; }
   .login-brand-panel { display: none; }

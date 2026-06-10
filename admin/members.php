@@ -5,6 +5,8 @@ require_login('admin');
 
 $editUser = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verify_csrf('admin/members.php');
+
     $action = $_POST['action'] ?? '';
     if ($action === 'save') {
         $id = (int) ($_POST['id_user'] ?? 0);
@@ -15,6 +17,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'email' => trim($_POST['email'] ?? ''),
         ];
         $plainPassword = trim($_POST['password'] ?? '');
+
+        if ($data['nama'] === '' || $data['username'] === '' || $data['email'] === '') {
+            set_flash('error', 'Nama, username, dan email wajib diisi.');
+            redirect_to('admin/members.php');
+        }
+
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            set_flash('error', 'Format email tidak valid.');
+            redirect_to('admin/members.php');
+        }
+
+        $checkStmt = $pdo->prepare('SELECT COUNT(*) FROM users WHERE (username = :username OR email = :email) AND id_user <> :id_user');
+        $checkStmt->execute([
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'id_user' => $id,
+        ]);
+        if ((int) $checkStmt->fetchColumn() > 0) {
+            set_flash('error', 'Username atau email sudah digunakan akun lain.');
+            redirect_to('admin/members.php');
+        }
 
         if ($id > 0) {
             $data['id_user'] = $id;
@@ -49,14 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if (isset($_GET['edit'])) {
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE id_user = :id_user');
+    $stmt = $pdo->prepare('SELECT id_user, nama, username, role, email FROM users WHERE id_user = :id_user');
     $stmt->execute(['id_user' => (int) $_GET['edit']]);
     $editUser = $stmt->fetch();
 }
 
 $search = trim($_GET['q'] ?? '');
 $params = [];
-$sql = 'SELECT * FROM users';
+$sql = 'SELECT id_user, nama, username, role, email FROM users';
 if ($search !== '') {
     $sql .= ' WHERE nama LIKE :search OR username LIKE :search OR email LIKE :search';
     $params['search'] = '%' . $search . '%';
@@ -77,6 +100,7 @@ render_head('Manajemen Anggota');
                 <div><h2><?= $editUser ? 'Edit Anggota' : 'Tambah Anggota' ?></h2><p>Kelola akun admin dan mahasiswa.</p></div>
             </div>
             <form method="post" class="form-grid">
+                <?= csrf_field() ?>
                 <input type="hidden" name="action" value="save">
                 <input type="hidden" name="id_user" value="<?= e($editUser['id_user'] ?? '') ?>">
                 <div class="form-field"><label>Nama</label><input name="nama" value="<?= e($editUser['nama'] ?? '') ?>" required></div>
@@ -106,6 +130,7 @@ render_head('Manajemen Anggota');
                             <td class="status-row">
                                 <a class="small-btn" href="<?= e(base_url('admin/members.php?edit=' . $row['id_user'])) ?>">Edit</a>
                                 <form class="inline-form" method="post">
+                                    <?= csrf_field() ?>
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id_user" value="<?= (int) $row['id_user'] ?>">
                                     <button class="danger-btn" data-confirm="Hapus anggota ini?" type="submit">Hapus</button>

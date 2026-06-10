@@ -7,6 +7,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect_to('user/catalog.php');
 }
 
+verify_csrf('user/history.php?tab=favorites');
+
 $idBook = (int) ($_POST['id_book'] ?? 0);
 $action = $_POST['action'] ?? 'add';
 $idUser = (int) current_user()['id_user'];

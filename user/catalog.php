@@ -17,7 +17,7 @@ if ($category !== '' && $category !== 'all') {
     $where[] = 'category = :category';
     $params['category'] = $category;
 }
-$sql = 'SELECT * FROM books' . ($where ? ' WHERE ' . implode(' AND ', $where) : '') . ' ORDER BY title';
+$sql = 'SELECT id_book, title, author, category, status FROM books' . ($where ? ' WHERE ' . implode(' AND ', $where) : '') . ' ORDER BY title';
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $books = $stmt->fetchAll();

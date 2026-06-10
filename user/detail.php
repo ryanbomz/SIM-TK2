@@ -4,7 +4,7 @@ require_once __DIR__ . '/../includes/layout.php';
 require_login('mahasiswa');
 
 $id = (int) ($_GET['id'] ?? 0);
-$stmt = $pdo->prepare('SELECT * FROM books WHERE id_book = :id');
+$stmt = $pdo->prepare('SELECT id_book, title, author, publisher, year, category, isbn, total_stock, available_stock, synopsis, status FROM books WHERE id_book = :id');
 $stmt->execute(['id' => $id]);
 $book = $stmt->fetch();
 if (!$book) {
@@ -47,6 +47,7 @@ render_user_topbar('catalog');
             <div class="action-row">
                 <?php if ((int) $book['available_stock'] > 0 && !$alreadyBorrowed): ?>
                     <form action="<?= e(base_url('process/borrow.php')) ?>" method="post">
+                        <?= csrf_field() ?>
                         <input type="hidden" name="id_book" value="<?= (int) $book['id_book'] ?>">
                         <button class="primary-btn" type="submit">Pinjam Buku</button>
                     </form>
@@ -56,6 +57,7 @@ render_user_topbar('catalog');
                     <span class="badge borrowed">Stok habis</span>
                 <?php endif; ?>
                 <form action="<?= e(base_url('process/favorite.php')) ?>" method="post">
+                    <?= csrf_field() ?>
                     <input type="hidden" name="id_book" value="<?= (int) $book['id_book'] ?>">
                     <input type="hidden" name="action" value="<?= $isFavorite ? 'remove' : 'add' ?>">
                     <button class="secondary-btn" type="submit"><?= $isFavorite ? 'Hapus dari Favorit' : 'Tambah ke Favorit' ?></button>
